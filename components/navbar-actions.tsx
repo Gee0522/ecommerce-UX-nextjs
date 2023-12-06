@@ -17,6 +17,7 @@ const NavbarActions = () => {
   const cart = useCart();
 
   if (!isMounted) return null;
+  console.log(cart.items);
 
   return (
     <div className="ml-auto flex items-center gap-x-4">

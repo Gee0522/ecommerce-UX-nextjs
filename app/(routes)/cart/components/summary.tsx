@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 const Summary = () => {
   const items = useCart((state) => state.items);
   const removeAll = useCart((state) => state.removeAll);
+  const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -18,18 +19,28 @@ const Summary = () => {
       toast.success("Payment compeleted");
       removeAll();
     }
-    if (searchParams.get("canceled")) toast.error("Somenthing went wrong.");
+    const cancledParam = searchParams.get("canceled");
+    if (cancledParam && cancledParam !== "user-cation") {
+      toast.error("order Cancelled.");
+    }
   }, [searchParams, removeAll]);
 
-  const totalPrice = items.reduce((total, item) => {
-    return total + Number(item.price);
-  }, 0);
+  const totalPrice = () => {
+    return (
+      items.reduce((total, item) => {
+        return total + Number(item.price) * item.quantity;
+      }, 0) || null
+    );
+  };
 
   const onCheckout = async () => {
+    setLoading(true);
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
-      { productIds: items.map((item) => item.id) }
+      { productIds: items.map((item) => item) }
     );
+
+    setLoading(false);
 
     window.location = response.data.url;
   };
@@ -49,18 +60,17 @@ const Summary = () => {
       <h2 className="text-lg font-medium text-black-900">Order Summary</h2>
       <div className="mt-6 space-y-4">
         <div className="flex items-center justify-between border-t border-blue-500 pt-4">
-          <div className="text-base font-medium text-gray-900">
-            Order Total :
-          </div>
-          <Currency value={totalPrice} />
+          <div className="text-base font-medium text-gray-900">Subtotal :</div>
+          <Currency value={totalPrice.toString()} />
         </div>
       </div>
       <Button
+        disabled={items.length === 0}
         onClick={onCheckout}
-        className="w-full mt-6 bg-yellow-400 text-black"
+        className="w-full mt-6 bg-yellow-500 text-black"
       >
         Checkout {""}
-        {cart.items.length === 1
+        {cart.items.length === 0 || 1
           ? `(${cart.items.length} Item)`
           : `(${cart.items.length} Items)`}
       </Button>

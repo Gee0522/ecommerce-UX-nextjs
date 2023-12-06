@@ -24,12 +24,14 @@ const CartPage = () => {
           <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start gap-x-12">
             <div className="lg:col-span-7">
               {cart.items.length === 0 && (
-                <p className="text-neutral-500 text-lg">No added Item.</p>
+                <p className="text-neutral-600 text-lg text-center">
+                  No added Item.
+                </p>
               )}
               <ul>
-                {cart.items.map((item) => (
-                  <CartItem key={item.id} data={item} />
-                ))}
+                {cart.items.map(
+                  (item) => item && <CartItem key={item.id} data={item} />
+                )}
               </ul>
             </div>
             <Summary />

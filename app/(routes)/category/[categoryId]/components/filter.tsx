@@ -5,6 +5,15 @@ import { cn } from "@/lib/utils";
 import { Color, Size } from "@/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import React from "react";
 
 interface FilterProps {
   data: (Size | Color)[];
@@ -39,25 +48,30 @@ const Filter: React.FC<FilterProps> = ({ data, name, valueKey }) => {
   };
 
   return (
-    <div className="mb-8">
-      <h3 className="text-lg font-semibold">{name}</h3>
-      <hr className="my-4" />
-      <div className="flex flex-wrap gap-2">
-        {data.map((filter) => (
-          <div key={filter.id} className="flex items-center">
-            <Button
-              className={cn(
-                "rounded-md text-gray-800 p-2 bg-white border border-gray-300",
-                selectedValue === filter.id && "bg-black  text-white"
-              )}
-              onClick={() => onClick(filter.id)}
-            >
-              {filter.name}
-            </Button>
-          </div>
-        ))}
+    <>
+      <div className="mb-8">
+        <Select onValueChange={onClick}>
+          <div className="flex flex-wrap gap-2 font-semibold">{name} :</div>
+          <SelectTrigger className="w-[125px]">
+            <SelectValue placeholder={"Select"} />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            {data.map((filter) => (
+              <SelectItem
+                className={cn(
+                  "rounded-md text-black-600 hover:opacity-50",
+                  selectedValue === filter.id
+                )}
+                value={filter.id}
+                id={filter.id}
+              >
+                {filter.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-    </div>
+    </>
   );
 };
 

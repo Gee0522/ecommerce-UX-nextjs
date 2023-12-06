@@ -4,6 +4,7 @@ import Gallery from "@/components/gallery";
 import Info from "@/components/info";
 import ProductList from "@/components/product-list";
 import Container from "@/components/ui/container";
+import { Heading } from "@/components/ui/heading";
 
 interface ProductPageProps {
   params: {
@@ -21,6 +22,9 @@ const ProductPage: React.FC<ProductPageProps> = async ({ params }) => {
     <div className="bg-white">
       <Container>
         <div className="px-4 py-10 sm:px-6 lg:px-8">
+          <div className="p-1 font-normal">
+            <Heading title={`${product.name}`} description={""} />
+          </div>
           <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
             {/* Gallery */}
             <Gallery images={product.images} />

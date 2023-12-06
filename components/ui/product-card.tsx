@@ -6,7 +6,7 @@ import IconButton from "@/components/ui/icon-button";
 import { Expand, ShoppingCart } from "lucide-react";
 import Currency from "@/components/ui/currency";
 import { useRouter } from "next/navigation";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 import usePreviewModal from "@/hooks/use-preview-modal";
 import useCart from "@/hooks/use-cart";
 
@@ -32,7 +32,7 @@ const ProductCard: React.FC<ProductCard> = ({ data }) => {
   const onAddToCart: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.stopPropagation();
 
-    cart.addItem(data);
+    cart.addItemToCart(data);
   };
 
   return (
@@ -52,14 +52,15 @@ const ProductCard: React.FC<ProductCard> = ({ data }) => {
           className="opacity-0 group-hover:opacity-100 transition absolute w-full
          px-6 bottom-5"
         >
+          {/* Buttons view and add to cart */}
           <div className="flex gap-x-6 justify-center">
             <IconButton
               onClick={onPreview}
-              icon={<Expand size={20} className="text-blue-600" />}
+              icon={<Expand size={20} className="text-gray-600" />}
             />
             <IconButton
               onClick={onAddToCart}
-              icon={<ShoppingCart size={20} className="text-red-600" />}
+              icon={<ShoppingCart size={20} className="text-blue-600" />}
             />
           </div>
         </div>
@@ -67,6 +68,7 @@ const ProductCard: React.FC<ProductCard> = ({ data }) => {
       {/* Description */}
       <div>
         <p className="font-semibold text-lg">{data.name}</p>
+        <p className="font-medium text-md"> Qty : {data.quantity}</p>
         <p className="text-sm text-gray-500">{data.category.name}</p>
       </div>
       {/* Price */}
