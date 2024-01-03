@@ -4,33 +4,34 @@ import Button from "@/components/ui/button";
 import Currency from "@/components/ui/currency";
 import useCart from "@/hooks/use-cart";
 import axios from "axios";
+import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const Summary = () => {
+  const { data: session } = useSession();
   const items = useCart((state) => state.items);
   const removeAll = useCart((state) => state.removeAll);
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (searchParams.get("success")) {
-      toast.success("Payment compeleted");
+    const success = searchParams.get("success");
+    const canceled = searchParams.get("canceled");
+
+    if (success) {
+      toast.success("Payment completed.");
       removeAll();
+    } else if (canceled) {
+      toast.error("Order canceled.");
     }
-    const cancledParam = searchParams.get("canceled");
-    if (cancledParam && cancledParam !== "user-cation") {
-      toast.error("order Cancelled.");
-    }
-  }, [searchParams, removeAll]);
+  }, [removeAll, searchParams]);
 
   const totalPrice = () => {
-    return (
-      items.reduce((total, item) => {
-        return total + Number(item.price) * item.quantity;
-      }, 0) || null
-    );
+    return items.reduce((total, item) => {
+      return total + Number(item.price) * item.quantity;
+    }, 0);
   };
 
   const onCheckout = async () => {
@@ -39,7 +40,6 @@ const Summary = () => {
       `${process.env.NEXT_PUBLIC_API_URL}/checkout`,
       { productIds: items.map((item) => item) }
     );
-
     setLoading(false);
 
     window.location = response.data.url;
@@ -51,8 +51,6 @@ const Summary = () => {
     setIsMounted(true);
   }, []);
 
-  const cart = useCart();
-
   if (!isMounted) return null;
 
   return (
@@ -60,20 +58,28 @@ const Summary = () => {
       <h2 className="text-lg font-medium text-black-900">Order Summary</h2>
       <div className="mt-6 space-y-4">
         <div className="flex items-center justify-between border-t border-blue-500 pt-4">
-          <div className="text-base font-medium text-gray-900">Subtotal :</div>
-          <Currency value={totalPrice.toString()} />
+          <div className="text-base font-medium text-gray-900">Subtotal : </div>
+          <Currency value={totalPrice()} />
         </div>
       </div>
-      <Button
-        disabled={items.length === 0}
-        onClick={onCheckout}
-        className="w-full mt-6 bg-yellow-500 text-black"
-      >
-        Checkout {""}
-        {cart.items.length === 0 || 1
-          ? `(${cart.items.length} Item)`
-          : `(${cart.items.length} Items)`}
-      </Button>
+      {/* if no user direct to login */}
+      {!session?.user ? (
+        <Button
+          disabled={items.length === 0}
+          onClick={() => signIn()}
+          className="w-full mt-6 bg-yellow-500 text-black"
+        >
+          Proceed Checkout
+        </Button>
+      ) : (
+        <Button
+          disabled={items.length === 0}
+          onClick={onCheckout}
+          className="w-full mt-6 bg-yellow-500 text-black"
+        >
+          Checkout
+        </Button>
+      )}
     </div>
   );
 };

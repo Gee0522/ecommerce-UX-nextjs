@@ -5,6 +5,7 @@ import Info from "@/components/info";
 import ProductList from "@/components/product-list";
 import Container from "@/components/ui/container";
 import { Heading } from "@/components/ui/heading";
+import { Review } from "@/types";
 
 interface ProductPageProps {
   params: {

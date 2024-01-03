@@ -4,6 +4,22 @@ export interface Billboard {
   imageUrl: string;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  reviews: Review;
+}
+
+export interface Review {
+  id: string;
+  comment: string;
+  rating: number;
+  userId: User;
+  productId: Product;
+}
+
 export interface Category {
   id: string;
   name: string;

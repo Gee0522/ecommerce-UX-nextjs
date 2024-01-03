@@ -7,9 +7,9 @@ import { Product } from "@/types";
 interface CartStore {
   items: Product[];
   addItemToCart: (data: Product) => void;
-  // updateQuantity: (id: string, newQuantity: number) => void;
-  removeItem: (id: string) => void;
+  addQuantity: (data: Product) => void;
   decrementItem: (id: string) => void;
+  removeItem: (id: string) => void;
   removeAll: () => void;
 }
 
@@ -23,16 +23,30 @@ const useCart = create(
 
         if (existingItem) {
           // item already exists in the cart
-          // set((state) => {
-          //   const updatedItems = [...state.items];
-          //   updatedItems[data.quantity].quantity += 1;
-          //   toast(`Total of ${data.quantity} for ${data.name}`);
-          //   return { items: updatedItems };
-          return toast("Item already in cart.");
-          // });
+          toast(`${data.name} already in cart.`);
         } else {
-          set({ items: [...get().items, data] });
-          toast.success("Item added to cart.");
+          set((state) => ({
+            items: [...state.items, { ...data, quantity: 1 }],
+          }));
+          toast.success(`${data.name} added to cart.`);
+        }
+      },
+      addQuantity: (data: Product) => {
+        const currentItems = get().items;
+        const existingItem = currentItems.find((item) => item.id === data.id);
+        if (existingItem) {
+          set((state) => {
+            const updatedItems = state.items.map((item) =>
+              item.id === data.id
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
+            const updatedItem = updatedItems.find(
+              (item) => item.id === data.id
+            );
+            toast.success(`Total of ${updatedItem?.quantity} for ${data.name}`);
+            return { items: updatedItems };
+          });
         }
       },
       removeItem: (id: string) => {
@@ -64,14 +78,7 @@ const useCart = create(
           return { items: updatedItems };
         });
       },
-      updateQuantity: (id: string, newQuantity: number) => {
-        set((state) => {
-          const updatedItems = state.items.map((item) =>
-            item.id === id ? { ...item, quantity: newQuantity } : item
-          );
-          return { items: updatedItems };
-        });
-      },
+
       removeAll: () => set({ items: [] }),
     }),
 

@@ -6,7 +6,7 @@ import IconButton from "@/components/ui/icon-button";
 import { Expand, ShoppingCart } from "lucide-react";
 import Currency from "@/components/ui/currency";
 import { useRouter } from "next/navigation";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler } from "react";
 import usePreviewModal from "@/hooks/use-preview-modal";
 import useCart from "@/hooks/use-cart";
 
@@ -38,7 +38,7 @@ const ProductCard: React.FC<ProductCard> = ({ data }) => {
   return (
     <div
       onClick={handleClick}
-      className="bg-white group cursor-pointer rounded-xl border p-3 space-y-4"
+      className="bg-white group cursor-pointer rounded-xl border p-3 space-y-2"
     >
       {/* Images and actions */}
       <div className="aspect-square rounded-xl bg-gray-100 relative">

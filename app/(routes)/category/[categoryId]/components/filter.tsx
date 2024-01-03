@@ -59,7 +59,7 @@ const Filter: React.FC<FilterProps> = ({ data, name, valueKey }) => {
             {data.map((filter) => (
               <SelectItem
                 className={cn(
-                  "rounded-md text-black-600 hover:opacity-50",
+                  "text-black-600 hover:opacity-75",
                   selectedValue === filter.id
                 )}
                 value={filter.id}

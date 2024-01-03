@@ -1,12 +1,16 @@
 "use client";
 
+import SignUpForm from "@/app/sign-up";
+import Login from "@/app/login";
 import Button from "@/components/ui/button";
 import useCart from "@/hooks/use-cart";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const NavbarActions = () => {
+  const { data: session } = useSession();
   const [isMounted, setIsMounteed] = useState(false);
 
   useEffect(() => {
@@ -21,12 +25,26 @@ const NavbarActions = () => {
 
   return (
     <div className="ml-auto flex items-center gap-x-4">
+      {!session?.user ? (
+        <>
+          <Button
+            className="p-2 rounded-md"
+            onClick={() => router.push("/user")}
+          >
+            {" "}
+            Sign-up{" "}
+          </Button>
+        </>
+      ) : (
+        ""
+      )}
+      <Login />
       <Button
         onClick={() => router.push("/cart")}
-        className="flex items-center rounded-full bg-black px-4 py-2"
+        className="flex items-center rounded-md bg-yellow-500 px-3 py-2"
       >
-        <ShoppingBag size={17} color="white" />
-        <span className="ml-2 text-sm font-medium text-white">
+        <ShoppingCart size={20} color="black" />
+        <span className="ml-2 text-md font-medium text-white">
           {cart.items.length}
         </span>
       </Button>

@@ -1,52 +1,37 @@
 "use client";
 
-import { Product } from "@/types";
+import { Product, Review } from "@/types";
 import Currency from "./ui/currency";
 import Button from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import useCart from "@/hooks/use-cart";
-import { MouseEventHandler, useEffect, useState } from "react";
+import { MouseEventHandler } from "react";
+import ReviewForm from "./ui/review-form";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { useParams } from "next/navigation";
-import { error } from "console";
+import getReview from "@/actions/get-review";
 
 interface InfoProps {
   data: Product;
 }
 
 const Info: React.FC<InfoProps> = ({ data }) => {
-  const cart = useCart();
-  const [quantity, setQuantity] = useState(1);
+  const review = getReview({});
+  const { data: session } = useSession();
 
-  const onAddToCart = () => {
+  const cart = useCart();
+
+  const onAddToCart: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.stopPropagation();
     cart.addItemToCart(data);
   };
 
-  // const handleQuantityChange = () => {
-  //   const orderQuantity = quantity;
-  //   setQuantity(orderQuantity);
-  // };
-
-  // const addQuantity = () => {
-  //   const initialQuantity = quantity;
-  //   if (initialQuantity >= data.quantity) {
-  //     toast.error(
-  //       initialQuantity <= 1
-  //         ? `Only ${quantity} item left`
-  //         : `Only ${quantity} items are available`
-  //     );
-  //     return initialQuantity;
-  //   }
-
-  //   setQuantity(initialQuantity + 1);
-  // };
-
-  // const subQuantity = () => {
-  //   if (!quantity || quantity <= 1) {
-  //     return toast.error("Invalid quantity");
-  //   }
-  //   setQuantity(quantity - 1);
-  // };
+  console.log(JSON.stringify(review));
+  const handleReviewSubmit = (newReview: Review) => {
+    // Handle the newly submitted review
+    toast("New Review:", newReview);
+  };
 
   return (
     <div>
@@ -70,34 +55,8 @@ const Info: React.FC<InfoProps> = ({ data }) => {
           />
         </div>
         <div className="flex items-center gap-x-3 text-center">
-          <h3 className="font-medium text-black"> Avail : {data.quantity} </h3>
+          <h3 className="font-medium text-black"> Stock : {data.quantity} </h3>
         </div>
-        {/* <div className="flex gap-x-1">
-          <Button
-            onClick={subQuantity}
-            className=""
-            disabled={quantity == 1 ? true : false}
-          >
-            {" "}
-            -{" "}
-          </Button>
-          <input
-            className="text-center border border-spacing-2 w-12"
-            disabled
-            id="quantity"
-            name="quantity"
-            value={quantity}
-            onChange={handleQuantityChange}
-          />
-          <Button
-            onClick={addQuantity}
-            disabled={quantity == data.quantity ? true : false}
-            className=""
-          >
-            {" "}
-            +{" "}
-          </Button>
-        </div> */}
       </div>
 
       <div className="mt-10 flex items-center gap-x-3">
@@ -108,6 +67,13 @@ const Info: React.FC<InfoProps> = ({ data }) => {
           Add to Cart
           <ShoppingCart />
         </Button>
+      </div>
+      <div>
+        {/* <ReviewForm
+          productId={data.id}
+          userId={userId}
+          onReviewSubmit={handleReviewSubmit}
+        /> */}
       </div>
     </div>
   );

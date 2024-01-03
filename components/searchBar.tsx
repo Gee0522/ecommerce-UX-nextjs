@@ -3,7 +3,7 @@
 import { Product } from "@/types";
 import { SearchIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import qs from "query-string";
 import Link from "next/link";
 import NoResults from "./ui/no-results";
@@ -57,56 +57,52 @@ const SearchBar: React.FC<ProductSearchProps> = ({ data, valueKey }) => {
   console.log(filteredData);
 
   return (
-    <div className="relative rounded-md shadow-sm pb-0 p-4">
-      <div className="relative">
-        <div className="pointer-events-none absolute items-center">
-          <SearchIcon className="h-8 w-8 text-gray-500 pt-1" />
-        </div>
+    <div className="relative flex-col rounded-md p-3 pt-4 text-base m-auto q  gap-x-4">
+      <div className="pointer-events-auto absolute items-center">
+        <SearchIcon className="h-8 w-8 text-gray-500 pt-1" />
+      </div>
+      <div>
         <input
           type="text"
           value={searchTerm}
           placeholder="Search products.."
           onChange={handleInputChange}
-          className="block w-[500px] rounded-md border py-1.5 pl-10 text-gray-600 font-sans mb-1"
+          className="flex w-full md:w-auto rounded-md border border-black py-1.5 pl-10 text-gray-600 font-sans mb-1 "
         />
-        {/* { displaying filtered products } */}
-        <div className="border">
-          {searchTerm && filteredData.length > 0 ? (
-            <>
-              {filteredData.map((product) => (
-                <div
-                  className="pt-2 items-center"
-                  key={product.id || product.color.id}
+      </div>
+      {/* { displaying filtered products } */}
+      <div className="absolute z-10 w-full mt-2 bg-white ring-black ring-opacity-5">
+        {searchTerm && filteredData.length > 0 ? (
+          <>
+            {filteredData.map((product) => (
+              <div className="pt-2" key={product.id}>
+                <a
+                  className="pl-1 bg-white flex items-center hover:opacity-50 transition"
+                  href={`/product/${product?.id}`}
                 >
-                  <Link
-                    className="pl-1 bg-white flex items-center hover:opacity-50 transition"
-                    href={`/product/${product.id}`}
-                    passHref
-                  >
-                    <div className="p-2">
-                      <SearchIcon className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <img
-                      src={product.images[0]?.url}
-                      alt={product.name}
-                      className="w-8 h-8 border p-1 rounded-md"
-                    />
-                    <div className="p-0 pl-2 font-medium text-md">
-                      {product.name}
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </>
-          ) : (
-            searchTerm &&
-            filteredData.length == 0 && (
-              <div className="p-3 border-spacing-0">
-                <NoResults />
+                  <div className="p-2">
+                    <SearchIcon className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <img
+                    src={product.images[0]?.url}
+                    alt={product.name}
+                    className="w-8 h-8 border p-1 rounded-md"
+                  />
+                  <div className="p-0 pl-2 font-medium text-md">
+                    {product.name}
+                  </div>
+                </a>
               </div>
-            )
-          )}
-        </div>
+            ))}
+          </>
+        ) : (
+          searchTerm &&
+          filteredData.length == 0 && (
+            <div className="p-3 border-spacing-0">
+              <NoResults />
+            </div>
+          )
+        )}
       </div>
     </div>
   );
