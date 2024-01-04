@@ -17,16 +17,15 @@ const Summary = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const success = searchParams.get("success");
-    const canceled = searchParams.get("canceled");
-
-    if (success) {
+    if (searchParams.get("success")) {
       toast.success("Payment completed.");
       removeAll();
-    } else if (canceled) {
-      toast.error("Order canceled.");
     }
-  }, [removeAll, searchParams]);
+
+    if (searchParams.get("canceled")) {
+      toast.error("Something went wrong.");
+    }
+  }, [searchParams, removeAll]);
 
   const totalPrice = () => {
     return items.reduce((total, item) => {

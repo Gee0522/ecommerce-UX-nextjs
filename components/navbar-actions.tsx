@@ -8,6 +8,7 @@ import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const NavbarActions = () => {
   const { data: session } = useSession();
@@ -27,13 +28,11 @@ const NavbarActions = () => {
     <div className="ml-auto flex items-center gap-x-4">
       {!session?.user ? (
         <>
-          <Button
-            className="p-2 rounded-md"
-            onClick={() => router.push("/user")}
-          >
-            {" "}
-            Sign-up{" "}
-          </Button>
+          <div className="p-2 pr-0 text-blue-900 hover:text-blue-500">
+            <Link href={"/user"} className="p-2 rounded-md">
+              Sign-up
+            </Link>
+          </div>
         </>
       ) : (
         ""

@@ -8,8 +8,11 @@ import { MenuIcon, ShoppingCart, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import IconButton from "@/components/ui/icon-button";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 const NavBarFilter = () => {
+  const { data: session } = useSession();
   const [isMounted, setIsMounteed] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -56,10 +59,18 @@ const NavBarFilter = () => {
             </div>
             {/* Render the Filters */}
             <div className="p-4 justify-between">
-              <div className="p-4 pb-2">
-                <Login />
-              </div>
-              <div className="p-4">
+              {!session?.user ? (
+                <Link
+                  href={"/user"}
+                  className="p-2 pr-0  text-blue-900 hover:text-blue-500"
+                >
+                  Sign-up
+                </Link>
+              ) : (
+                ""
+              )}
+              <Login />
+              <div className="p-1">
                 <Button
                   onClick={() => router.push("/cart")}
                   className="flex items-center rounded-md bg-yellow-500 px-3 py-2"

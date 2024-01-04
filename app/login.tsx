@@ -6,6 +6,7 @@ import Button from "@/components/ui/button";
 import { UserCard } from "@/components/userCard";
 
 import { useSession, signIn } from "next-auth/react";
+import Link from "next/link";
 // import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -53,13 +54,11 @@ const Login = () => {
   } else {
     return (
       <>
-        <Button
-          onClick={() => signIn()}
-          type="button"
-          className="btn btn-primary border p-2 rounded-md"
-        >
-          Login
-        </Button>
+        <div className="p-2 text-blue-900 hover:text-blue-500">
+          <Link href={""} onClick={() => signIn()}>
+            Login
+          </Link>
+        </div>
       </>
     );
   }

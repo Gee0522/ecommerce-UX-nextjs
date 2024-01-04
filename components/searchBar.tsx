@@ -1,11 +1,10 @@
 "use client";
 
 import { Product } from "@/types";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, XIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import qs from "query-string";
-import Link from "next/link";
 import NoResults from "./ui/no-results";
 
 interface ProductSearchProps {
@@ -56,12 +55,16 @@ const SearchBar: React.FC<ProductSearchProps> = ({ data, valueKey }) => {
 
   console.log(filteredData);
 
+  const clearData = () => {
+    setSearchTerm(searchTerm.slice(0, 0));
+  };
+
   return (
-    <div className="relative flex-col rounded-md p-3 pt-4 text-base m-auto q  gap-x-4">
-      <div className="pointer-events-auto absolute items-center">
-        <SearchIcon className="h-8 w-8 text-gray-500 pt-1" />
-      </div>
-      <div>
+    <div className="relative flex-col rounded-md p-2 pt-4 text-base m-auto gap-x-4">
+      <div className="block relative">
+        <div className="pointer-events-auto absolute items-center">
+          <SearchIcon className="h-8 w-8 text-gray-500 pt-2 text-center justify-center" />
+        </div>
         <input
           type="text"
           value={searchTerm}
@@ -69,9 +72,19 @@ const SearchBar: React.FC<ProductSearchProps> = ({ data, valueKey }) => {
           onChange={handleInputChange}
           className="flex w-full md:w-auto rounded-md border border-black py-1.5 pl-10 text-gray-600 font-sans mb-1 "
         />
+        {searchTerm && (
+          <button
+            type="button"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            onClick={clearData}
+          >
+            <XIcon className="h-4 w-4 text-gray-400" />
+          </button>
+        )}
       </div>
+
       {/* { displaying filtered products } */}
-      <div className="absolute z-10 w-full mt-2 bg-white ring-black ring-opacity-5">
+      <div className="absolute z-10 w-full mt-2 bg-white ring-black ring-opacity-5 rounded-md">
         {searchTerm && filteredData.length > 0 ? (
           <>
             {filteredData.map((product) => (
@@ -98,9 +111,11 @@ const SearchBar: React.FC<ProductSearchProps> = ({ data, valueKey }) => {
         ) : (
           searchTerm &&
           filteredData.length == 0 && (
-            <div className="p-3 border-spacing-0">
-              <NoResults />
-            </div>
+            <>
+              <div className="p-3 border-spacing-0">
+                <NoResults />
+              </div>
+            </>
           )
         )}
       </div>
